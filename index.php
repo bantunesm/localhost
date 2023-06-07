@@ -28,26 +28,45 @@
 /**
  * 1. Config
  */
-$title = 'Localhost'; // string required
-$description = 'A nice darkly localhost home page'; // string required
-$theme = 'default'; // 'default' | 'dracula'
-$menu = array(
-  array(
-      "label" => "Phpmyadmin", 
-      "path" => "http://localhost/phpmyadmin", 
-      "class" => "pma"
-    ),
-  array(
-      "label" => "Github", 
-      "path" => "https://github.com/", 
-      "class" => "github"
-    ),
-  array(
-      "label" => "PHP info", 
-      "path" => "http://localhost/assets/utils/phpinfo.php", 
-      "class" => "php"
-    )
+$title = 'Localhost';
+$description = 'A nice darkly localhost home page';
+$theme = 'default';
+$menu = array();
+
+$phpmyadminPath = $_SERVER['DOCUMENT_ROOT'] . '/phpmyadmin';
+
+if (is_dir($phpmyadminPath)) {
+  $menu[] = array(
+    "label" => "Phpmyadmin", 
+    "path" => "http://localhost/phpmyadmin", 
+    "class" => "pma"
+  );
+}
+
+$adminerPath = $_SERVER['DOCUMENT_ROOT'] . '/adminer.php';
+
+if (file_exists($adminerPath)) {
+  $menu[] = array(
+    "label" => "Adminer", 
+    "path" => "http://localhost/adminer.php", 
+    "class" => "adminer"
+  );
+}
+
+$menu[] = array(
+  "label" => "Github", 
+  "path" => "https://github.com/", 
+  "class" => "github"
 );
+
+$menu[] = array(
+  "label" => "PHP info", 
+  "path" => "http://localhost/assets/utils/phpinfo.php", 
+  "class" => "php"
+);
+
+// Utilisez $menu pour afficher les liens dans votre page
+
 
 
 /**
@@ -161,7 +180,7 @@ usort($files, function( $a, $b ) {
         <!-- Projects list section -->
         <section class="w-100">
             <?php $i = 0; ?>
-            <?php foreach( $files as $file ) { ?>
+            <?php foreach ($files as $file) { ?>
                 <article class="fl w-100 w-50-m w-25-l pa4">
                     <a href="<?php echo $file["path"]; ?>">
                         <div class="relative square grow link">
@@ -172,7 +191,9 @@ usort($files, function( $a, $b ) {
                                     </h3>
                                     <p class="f6 black">
                                         <?php echo $file["prettyDate"]; ?>
-                                        <?php echo $file["index"];  ?>
+                                        <?php if (isset($file["index"])) {
+                                            echo $file["index"];
+                                        } ?>
                                     </p>
                                 </div>
                             </div>
